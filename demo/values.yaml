@@ -1,0 +1,66 @@
+# Default values for demo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  imageRegistry:
+
+shopWeb:
+  replicaCount: 1
+  image:
+    repository: "shop-web"
+    tag: "1.0"
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    host:
+    path: /
+
+showWeb:
+  replicaCount: 1
+  image:
+    repository: "show-web"
+    tag: "1.0"
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    host:
+    path: /
+  systemInit:
+    image:
+      repository: "init-db"
+      tag: "1.0"
+      pullPolicy: Always
+
+bank:
+  image:
+    repository: "subscribe-service"
+    tag: "1.0"
+    pullPolicy: Always
+
+logistic:
+  image:
+    repository: "subscribe-service"
+    tag: "1.0"
+    pullPolicy: Always
+
+mysql:
+  mysqlDatabase: "bankdb"
+  mysqlUser: "demo"
+  mysqlPassword: "demo1234"
+
+mongodb:
+  mongodbDatabase: "logisticdb"
+  mongodbUsername: "demo"
+  mongodbPassword: "demo1234"
+
+redis:
+  password: "demo1234"
+
+kafka:
+  replicaCount: 1
+  zookeeper:
+    replicaCount: 1

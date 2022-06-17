@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-service
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "demo.name" . }}
+      app.kubernetes.io/instance: bank-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "demo.name" . }}
+        app.kubernetes.io/instance: bank-service
+    spec:
+      containers:
+        - name: bank-service
+          image: {{ include "bank.image" . }}
+          imagePullPolicy: {{ .Values.bank.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: kafka-secret
+          - secretRef:
+              name: mysql-secret
+          env:
+          - name: FUNC
+            value: MYSQL
+

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-web
+spec:
+  replicas: {{ .Values.shopWeb.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "demo.name" . }}
+      app.kubernetes.io/instance: shop-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "demo.name" . }}
+        app.kubernetes.io/instance: shop-web
+    spec:
+      containers:
+        - name: shop-web
+          image: {{ include "shopWeb.image" . }}
+          imagePullPolicy: {{ .Values.shopWeb.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: kafka-secret
+          - secretRef:
+              name: redis-secret
+          ports:
+            - containerPort: {{ .Values.shopWeb.service.port }}
+              name: http
+              protocol: TCP
+

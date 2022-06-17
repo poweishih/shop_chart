@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: show-web
+spec:
+  replicas: {{ .Values.showWeb.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "demo.name" . }}
+      app.kubernetes.io/instance: show-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "demo.name" . }}
+        app.kubernetes.io/instance: show-web
+    spec:
+      containers:
+        - name: show-web
+          image: {{ include "showWeb.image" . }}
+          imagePullPolicy: {{ .Values.showWeb.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: mysql-secret
+          - secretRef:
+              name: redis-secret
+          - secretRef:
+              name: mongodb-secret
+          ports:
+            - containerPort: {{ .Values.showWeb.service.port }}
+              name: http
+              protocol: TCP
+      initContainers:
+        - name: system-init
+          image: {{ include "systemInit.image" . }}
+          imagePullPolicy: {{ .Values.showWeb.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: mysql-secret
+          - secretRef:
+              name: redis-secret
+

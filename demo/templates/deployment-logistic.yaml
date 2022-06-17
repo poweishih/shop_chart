@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logistic-service
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "demo.name" . }}
+      app.kubernetes.io/instance: logistic-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "demo.name" . }}
+        app.kubernetes.io/instance: logistic-service
+    spec:
+      containers:
+        - name: logistic-service
+          image: {{ include "logistic.image" . }}
+          imagePullPolicy: {{ .Values.logistic.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: kafka-secret
+          - secretRef:
+              name: mongodb-secret
+          env:
+          - name: FUNC
+            value: MONGO
+

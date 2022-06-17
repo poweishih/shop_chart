@@ -1,0 +1,18 @@
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: show-ingress
+  labels:
+spec:
+  rules:
+    - host: {{ .Values.showWeb.ingress.host | quote }}
+      http:
+        paths:
+          - path: {{ .Values.showWeb.ingress.path | quote }}
+            backend:
+              serviceName: show-web-service
+              servicePort: {{ .Values.showWeb.service.port }}
